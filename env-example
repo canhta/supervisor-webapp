@@ -1,2 +1,3 @@
+API_KEY=test
 ENDPOINT_URL=http://localhost:5050
 NEXTAUTH_SECRET="Test"

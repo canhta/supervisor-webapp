@@ -1,4 +1,4 @@
-import { ENDPOINT_URL, NEXTAUTH_SECRET } from '@/constants';
+import { API_KEY, ENDPOINT_URL, NEXTAUTH_SECRET } from '@/constants';
 import { DefaultUser, NextAuthOptions } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import NextAuth from 'next-auth/next';
@@ -16,6 +16,7 @@ const refreshToken = async (tokens: JWT): Promise<JWT> => {
     method: 'POST',
     headers: {
       authorization: `Bearer ${tokens.refreshToken}`,
+      'api-key': API_KEY,
     },
   });
 
@@ -45,11 +46,15 @@ const authOptions: NextAuthOptions = {
 
         const res = await fetch(`${ENDPOINT_URL}/api/v1/auth/login`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'api-key': API_KEY,
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify(credentials),
         });
-        if (!res.ok) {
-          throw new Error('Failed to login');
+
+        if (res.status !== 200) {
+          return false;
         }
 
         return await res.json();

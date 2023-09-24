@@ -1,10 +1,10 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Next.js',
+  title: 'Admin only',
 };
 
-export default function Page() {
+export default function AdminPage() {
   return (
     <div>
       <div className="flex">
