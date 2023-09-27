@@ -1,3 +1,4 @@
-API_KEY=test
-ENDPOINT_URL=http://localhost:5050
+ENDPOINT_URL="https://api.vtechniq.com"
+NEXTAUTH_URL="http://localhost:3000"
+
 NEXTAUTH_SECRET="Test"
