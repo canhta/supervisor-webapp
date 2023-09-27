@@ -2,7 +2,7 @@
 import Breadcrumb from '@/components/common/Breadcrumb';
 import { Input } from '@/components/common/Input';
 import Loading from '@/components/common/Loading';
-import { IRoute } from '@/interfaces';
+import { IRoute } from '@/utils/interfaces';
 import Link from 'next/link';
 import { FormEvent, Suspense, useState } from 'react';
 

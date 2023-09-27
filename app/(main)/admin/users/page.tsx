@@ -2,7 +2,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import Loading from '@/components/common/Loading';
 import Breadcrumb from '@/components/common/Breadcrumb';
-import { IRoute, IUser } from '@/interfaces';
+import { IRoute, IUser } from '@/utils/interfaces';
 import Table, { ITableAction } from '@/components/common/Table';
 import Link from 'next/link';
 

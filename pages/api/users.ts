@@ -1,7 +1,4 @@
-import {
-  handleChangeRequest,
-  handleGetRequest,
-} from '@/utils/handleApiRequest';
+import { handleChangeRequest, handleGetRequest } from '@/utils/request';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { z } from 'zod';
 

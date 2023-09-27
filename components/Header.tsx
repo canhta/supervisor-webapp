@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { IRoute } from '@/interfaces';
-import { getSession } from '@/utils/get-session';
+import { IRoute } from '@/utils/interfaces';
+import { getSession } from '@/utils/session';
 import { SignOutButton } from './common/Buttons';
 import Dashboard from './Dashboard';
 

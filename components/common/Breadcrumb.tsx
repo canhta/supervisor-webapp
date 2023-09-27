@@ -1,4 +1,4 @@
-import { IRoute } from '@/interfaces';
+import { IRoute } from '@/utils/interfaces';
 import Link from 'next/link';
 
 function Breadcrumb(props: { routes: IRoute[] }) {

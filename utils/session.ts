@@ -1,7 +1,7 @@
 import 'server-only';
 import { cache } from 'react';
 import { getServerSession } from 'next-auth';
-import { ISession } from '@/interfaces';
+import { ISession } from '@/utils/interfaces';
 import { authOptions } from './auth';
 
 export const preload = () => {

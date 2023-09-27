@@ -1,4 +1,5 @@
 import { DefaultUser } from 'next-auth';
+import { UserRole } from '../enums';
 
 export interface IUser {
   id: string;
@@ -6,7 +7,7 @@ export interface IUser {
   firstName: string;
   lastName: string;
   canStream: boolean;
-  role: string;
+  role: UserRole;
   status: string;
   createdAt: string;
   updatedAt: string;

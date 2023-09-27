@@ -1,4 +1,4 @@
-import { IObject } from '@/interfaces';
+import { IObject } from '@/utils/interfaces';
 import React from 'react';
 
 export interface ITableAction {
