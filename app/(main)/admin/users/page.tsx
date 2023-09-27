@@ -3,8 +3,8 @@ import Loading from '@/components/common/Loading';
 import { getUsers } from '@/libs/users';
 import Breadcrumb from '@/components/common/Breadcrumb';
 import { IRoute, IUser } from '@/interfaces';
-import CreateUserModal from '@/components/CreateUserModal';
 import Table from '@/components/common/Table';
+import Link from 'next/link';
 
 export default async function Page() {
   const users = await getUsers();
@@ -27,9 +27,13 @@ export default async function Page() {
         <div className="p-4">
           <div className="flex justify-between items-center mb-4">
             <Breadcrumb routes={routes} />
-            <div className="actions">
-              <CreateUserModal title="Create" />
-            </div>
+            <Link
+              type="button"
+              className="btn btn-sm btn-primary"
+              href={'/admin/users/create'}
+            >
+              Create
+            </Link>
           </div>
           <Table data={users} keys={renderKeys} />
         </div>
