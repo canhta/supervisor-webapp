@@ -1,13 +1,24 @@
-import { Suspense } from 'react';
+'use client';
+import { Suspense, useEffect, useState } from 'react';
 import Loading from '@/components/common/Loading';
-import { getUsers } from '@/libs/users';
 import Breadcrumb from '@/components/common/Breadcrumb';
 import { IRoute, IUser } from '@/interfaces';
-import Table from '@/components/common/Table';
+import Table, { ITableAction } from '@/components/common/Table';
 import Link from 'next/link';
 
-export default async function Page() {
-  const users = await getUsers();
+export default function Page() {
+  const [users, setUsers] = useState<IUser[]>([]);
+
+  useEffect(() => {
+    const init = async () => {
+      const response = await fetch(`/api/users`, { method: 'GET' });
+      const { data } = await response.json();
+      setUsers(data);
+    };
+
+    init();
+  }, []);
+
   const routes: IRoute[] = [
     { title: 'Home', url: '/' },
     { title: 'User Management', url: '' },
@@ -19,6 +30,21 @@ export default async function Page() {
     'email',
     'status',
     'role',
+  ];
+
+  const actions: ITableAction[] = [
+    {
+      label: 'Edit',
+      onClick: (id: string) => {
+        console.log(id);
+      },
+    },
+    {
+      label: 'Delete',
+      onClick: (id: string) => {
+        console.log(id);
+      },
+    },
   ];
 
   return (
@@ -35,7 +61,7 @@ export default async function Page() {
               Create
             </Link>
           </div>
-          <Table data={users} keys={renderKeys} />
+          <Table data={users} keys={renderKeys} actions={actions} />
         </div>
       }
     </Suspense>

@@ -1,4 +1,7 @@
-import { handleApiRequest } from '@/utils/handleApiRequest';
+import {
+  handleChangeRequest,
+  handleGetRequest,
+} from '@/utils/handleApiRequest';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { z } from 'zod';
 
@@ -25,5 +28,16 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  return handleApiRequest(req, res, schema);
+  switch (req.method) {
+    case 'PUT':
+    case 'PATCH':
+    case 'POST':
+      return handleChangeRequest(req, res, schema);
+
+    case 'GET':
+      return handleGetRequest(req, res);
+
+    default:
+      throw new Error(`Unsupported method ${req.method}`);
+  }
 }
