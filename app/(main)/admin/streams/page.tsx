@@ -5,33 +5,28 @@ import Breadcrumb from '@/components/common/Breadcrumb';
 import Table, { ITableAction } from '@/components/common/Table';
 import Link from 'next/link';
 import { IRoute } from '@/utils/interfaces/system';
-import { IUser } from '@/utils/interfaces/user';
+import { IStream } from '@/utils/interfaces/stream';
 
 export default function Page() {
-  const [users, setUsers] = useState<IUser[]>([]);
+  const [streams, setStreams] = useState<IStream[]>([]);
+
+  const routes: IRoute[] = [
+    { title: 'Home', url: '/' },
+    { title: 'Stream Management', url: '' },
+  ];
 
   useEffect(() => {
     const init = async () => {
-      const response = await fetch(`/api/users`, { method: 'GET' });
-      const { data } = await response.json();
-      setUsers(data);
+      const response = await fetch(`/api/streams`, { method: 'GET' });
+      const data = await response.json();
+
+      setStreams(data);
     };
 
     init();
   }, []);
 
-  const routes: IRoute[] = [
-    { title: 'Home', url: '/' },
-    { title: 'User Management', url: '' },
-  ];
-
-  const renderKeys: (keyof IUser)[] = [
-    'firstName',
-    'lastName',
-    'email',
-    'status',
-    'role',
-  ];
+  const renderKeys: (keyof IStream)[] = ['name', 'location', 'status'];
 
   const actions: ITableAction[] = [
     {
@@ -57,12 +52,12 @@ export default function Page() {
             <Link
               type="button"
               className="btn btn-sm btn-primary"
-              href={'/admin/users/create'}
+              href={'/admin/streams/create'}
             >
               Create
             </Link>
           </div>
-          <Table data={users} keys={renderKeys} actions={actions} />
+          <Table data={streams} keys={renderKeys} actions={actions} />
         </div>
       }
     </Suspense>

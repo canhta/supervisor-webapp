@@ -1,4 +1,4 @@
-import { IObject } from '@/utils/interfaces';
+import { IObject } from '@/utils/interfaces/system';
 import React from 'react';
 
 export interface ITableAction {
@@ -25,7 +25,7 @@ const Table = ({ data, keys, actions }: Props) => {
           </tr>
         </thead>
         <tbody>
-          {data.map((item: IObject) => (
+          {data?.map((item: IObject) => (
             <tr key={item.id}>
               {keys.map((key: string) => (
                 <td key={key}>{item[key]}</td>

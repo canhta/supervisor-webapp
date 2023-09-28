@@ -1,15 +1,15 @@
 import Link from 'next/link';
-import { IRoute } from '@/utils/interfaces';
 import { getSession } from '@/utils/session';
 import { SignOutButton } from './common/Buttons';
 import Dashboard from './Dashboard';
+import { IRoute } from '@/utils/interfaces/system';
 
 export default async function Header(props: { children: React.ReactNode }) {
   const session = await getSession();
 
   const routes: IRoute[] = [
     { title: 'Users', url: '/admin/users' },
-    { title: 'Side bar item 2', url: '/sidebar-2' },
+    { title: 'Streams', url: '/admin/streams' },
     { title: 'Side bar item 3', url: '/sidebar-3' },
   ];
 

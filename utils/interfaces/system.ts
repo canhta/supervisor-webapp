@@ -1,19 +1,5 @@
 import { DefaultUser } from 'next-auth';
-import { UserRole } from '../enums';
-
-export interface IUser {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  canStream: boolean;
-  role: UserRole;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-  __entity: string;
-}
+import { IUser } from './user';
 
 export interface ISession {
   user: IUser;
