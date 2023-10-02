@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 const schema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
-  location: z.string().min(1, { message: 'Location is required' }),
+  address: z.string().min(1, { message: 'Address is required' }),
   cluster: z.object({
     id: z.number().int('Cluster must be selected'),
   }),

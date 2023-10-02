@@ -10,7 +10,6 @@ export async function handleChangeRequest(
   res: NextApiResponse,
   resourceSchema: z.ZodObject<any, any>,
 ) {
-  const resource = req.url?.split('/').pop();
   const session = await getServerSession(req, res, authOptions);
   const headers = {
     'Content-Type': 'application/json',
@@ -18,7 +17,6 @@ export async function handleChangeRequest(
   };
 
   const parsed = resourceSchema.safeParse(JSON.parse(req.body));
-
   if (!parsed.success) {
     const errors: Record<string, string> = {};
     parsed.error.issues.forEach((issue) => {
@@ -28,7 +26,7 @@ export async function handleChangeRequest(
     return res.status(400).json(errors);
   }
 
-  const apiResponse = await fetch(`${ENDPOINT_URL}/api/v1/${resource}`, {
+  const apiResponse = await fetch(`${ENDPOINT_URL}${req.url}`, {
     method: req.method,
     body: req.body,
     headers,
@@ -46,14 +44,13 @@ export async function handleGetRequest(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const resource = req.url?.split('/').pop();
   const session = await getServerSession(req, res, authOptions);
   const headers = {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${(session as any).token}`,
   };
 
-  const apiResponse = await fetch(`${ENDPOINT_URL}/api/v1/${resource}`, {
+  const apiResponse = await fetch(`${ENDPOINT_URL}${req.url}`, {
     method: req.method,
     headers,
   });

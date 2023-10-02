@@ -1,13 +1,16 @@
 'use client';
+
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import Loading from '@/components/common/Loading';
 import Breadcrumb from '@/components/common/Breadcrumb';
-import Table, { ITableAction } from '@/components/common/Table';
-import Link from 'next/link';
+import Table, { ITableAction } from '@/components/common/CTable';
 import { IRoute } from '@/utils/interfaces/system';
 import { IStream } from '@/utils/interfaces/stream';
 
 export default function Page() {
+  const router = useRouter();
   const [streams, setStreams] = useState<IStream[]>([]);
 
   const routes: IRoute[] = [
@@ -17,7 +20,7 @@ export default function Page() {
 
   useEffect(() => {
     const init = async () => {
-      const response = await fetch(`/api/streams`, { method: 'GET' });
+      const response = await fetch(`/api/v1/streams`, { method: 'GET' });
       const data = await response.json();
 
       setStreams(data);
@@ -26,13 +29,13 @@ export default function Page() {
     init();
   }, []);
 
-  const renderKeys: (keyof IStream)[] = ['name', 'location', 'status'];
+  const renderKeys: (keyof IStream)[] = ['name', 'address', 'status'];
 
   const actions: ITableAction[] = [
     {
       label: 'Edit',
       onClick: (id: string) => {
-        console.log(id);
+        router.push(`/admin/streams/${id}`);
       },
     },
     {

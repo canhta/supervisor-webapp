@@ -1,52 +1,54 @@
 'use client';
-import { Suspense, useEffect, useState } from 'react';
+import React, { Suspense } from 'react';
 import Loading from '@/components/common/Loading';
 import Breadcrumb from '@/components/common/Breadcrumb';
-import Table, { ITableAction } from '@/components/common/Table';
 import Link from 'next/link';
 import { IRoute } from '@/utils/interfaces/system';
 import { IUser } from '@/utils/interfaces/user';
+import Table from '@/components/common/Table';
+import { ColumnDef } from '@tanstack/react-table';
 
 export default function Page() {
-  const [users, setUsers] = useState<IUser[]>([]);
-
-  useEffect(() => {
-    const init = async () => {
-      const response = await fetch(`/api/users`, { method: 'GET' });
-      const { data } = await response.json();
-      setUsers(data);
-    };
-
-    init();
-  }, []);
-
   const routes: IRoute[] = [
     { title: 'Home', url: '/' },
     { title: 'User Management', url: '' },
   ];
 
-  const renderKeys: (keyof IUser)[] = [
-    'firstName',
-    'lastName',
-    'email',
-    'status',
-    'role',
-  ];
+  async function fetchData(options: { page: number; limit: number }): Promise<{
+    data: IUser[];
+    total: number;
+  }> {
+    const response = await fetch(
+      `/api/v1/users?page=${options.page}&limit=${options.limit}`,
+      { method: 'GET' },
+    );
+    const { data, total } = await response.json();
 
-  const actions: ITableAction[] = [
-    {
-      label: 'Edit',
-      onClick: (id: string) => {
-        console.log(id);
+    return { data, total };
+  }
+
+  const columns = React.useMemo<ColumnDef<IUser>[]>(
+    () => [
+      {
+        accessorKey: 'firstName',
+        cell: (info) => info.getValue(),
+        footer: (props) => props.column.id,
       },
-    },
-    {
-      label: 'Delete',
-      onClick: (id: string) => {
-        console.log(id);
+      {
+        accessorFn: (row) => row.lastName,
+        id: 'lastName',
+        cell: (info) => info.getValue(),
+        header: () => <span>Last Name</span>,
+        footer: (props) => props.column.id,
       },
-    },
-  ];
+      {
+        accessorKey: 'status',
+        header: 'Status',
+        footer: (props) => props.column.id,
+      },
+    ],
+    [],
+  );
 
   return (
     <Suspense fallback={<Loading />}>
@@ -62,7 +64,7 @@ export default function Page() {
               Create
             </Link>
           </div>
-          <Table data={users} keys={renderKeys} actions={actions} />
+          <Table columns={columns} fetchData={fetchData} />
         </div>
       }
     </Suspense>

@@ -10,6 +10,7 @@ interface SelectProps {
   label: string;
   type: string;
   value?: any;
+  disabled?: boolean;
   options: SelectOption[];
   onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   error?: string;
@@ -19,6 +20,7 @@ export const Select: React.FC<SelectProps> = ({
   name,
   label,
   value,
+  disabled,
   options,
   onChange,
   error,
@@ -31,6 +33,7 @@ export const Select: React.FC<SelectProps> = ({
     <select
       name={name}
       value={value}
+      disabled={disabled}
       onChange={onChange}
       className={classNames('select select-bordered w-full', {
         'select-error': error,

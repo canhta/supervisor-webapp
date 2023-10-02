@@ -1,10 +1,15 @@
-import { StreamStatusEnum } from '../enums';
+import { StatusEnum, StreamStatusEnum } from '../enums';
 import { ICluster } from './cluster';
-import { IUser } from './user';
+
+export interface IStreamViewer {
+  viewerID: string;
+  streamID: string;
+  status: StatusEnum;
+}
 
 export interface IStream {
   name?: string;
-  location?: string;
+  address?: string;
   cluster?: ICluster;
 
   id: string;
@@ -12,7 +17,7 @@ export interface IStream {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
-  streamViewers?: IUser[];
+  streamViewers?: IStreamViewer[];
   __entity: string;
 }
 
