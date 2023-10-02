@@ -1,17 +1,17 @@
 'use client';
-
+import * as _ from 'lodash';
+import AsyncSelect from 'react-select/async';
 import StreamForm from '@/components/StreamForm';
 import Breadcrumb from '@/components/common/Breadcrumb';
 import Loading from '@/components/common/Loading';
-import Table from '@/components/common/Table';
 import { StatusEnum } from '@/utils/enums';
 import { ICluster } from '@/utils/interfaces/cluster';
 import { IStream } from '@/utils/interfaces/stream';
 import { IRoute } from '@/utils/interfaces/system';
 import { IUser } from '@/utils/interfaces/user';
-import { ColumnDef } from '@tanstack/react-table';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
+import { SelectOption } from '@/utils/interfaces/react-select';
 
 function Page({ params }: { params: { id: string } }) {
   const [stream, setStream] = useState<IStream>();
@@ -66,28 +66,23 @@ function Page({ params }: { params: { id: string } }) {
     return { data, total };
   }
 
-  const userColumns = useMemo<ColumnDef<IUser>[]>(
-    () => [
-      {
-        accessorKey: 'firstName',
-        cell: (info) => info.getValue(),
-        footer: (props) => props.column.id,
+  const loadUserOptions = (inputValue: string): Promise<SelectOption[]> =>
+    fetch(`/api/v1/users?search=${inputValue}`, { method: 'GET' }).then(
+      async (res) => {
+        if (!res.ok) {
+          return [];
+        }
+
+        const { data } = await res.json();
+        return data?.map(
+          (item: IUser): SelectOption => ({
+            value: item.id,
+            label: `${item.firstName} ${item.lastName}`,
+            isDisabled: false,
+          }),
+        );
       },
-      {
-        accessorFn: (row) => row.lastName,
-        id: 'lastName',
-        cell: (info) => info.getValue(),
-        header: () => <span>Last Name</span>,
-        footer: (props) => props.column.id,
-      },
-      {
-        accessorKey: 'status',
-        header: 'Status',
-        footer: (props) => props.column.id,
-      },
-    ],
-    [],
-  );
+    );
 
   const onUpdate = (body: string): Promise<Response> => {
     return fetch(`/api/v1/streams/${params.id}`, { method: 'PATCH', body });
@@ -136,11 +131,11 @@ function Page({ params }: { params: { id: string } }) {
       </div>
       <div className="border-solid border-2 rounded-md p-4 mt-4">
         <h3 className="pb-4 font-bold text-lg">Grande view access</h3>
-        <Table
-          columns={userColumns}
-          fetchData={fetchUser}
-          enableRowSelection
-          defaultSelectedIDs={selectedUserIDs}
+        <AsyncSelect
+          isMulti
+          cacheOptions
+          defaultOptions
+          loadOptions={loadUserOptions}
         />
         <div className="flex mt-4 justify-end gap-4 w-full">
           <button

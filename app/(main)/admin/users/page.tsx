@@ -29,23 +29,9 @@ export default function Page() {
 
   const columns = React.useMemo<ColumnDef<IUser>[]>(
     () => [
-      {
-        accessorKey: 'firstName',
-        cell: (info) => info.getValue(),
-        footer: (props) => props.column.id,
-      },
-      {
-        accessorFn: (row) => row.lastName,
-        id: 'lastName',
-        cell: (info) => info.getValue(),
-        header: () => <span>Last Name</span>,
-        footer: (props) => props.column.id,
-      },
-      {
-        accessorKey: 'status',
-        header: 'Status',
-        footer: (props) => props.column.id,
-      },
+      { accessorKey: 'firstName', header: 'First Name' },
+      { accessorKey: 'lastName', header: 'Last Name' },
+      { accessorKey: 'status', header: 'Status' },
     ],
     [],
   );

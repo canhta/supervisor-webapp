@@ -2,50 +2,64 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Suspense, useEffect, useState } from 'react';
+import React, { Suspense } from 'react';
 import Loading from '@/components/common/Loading';
 import Breadcrumb from '@/components/common/Breadcrumb';
-import Table, { ITableAction } from '@/components/common/CTable';
 import { IRoute } from '@/utils/interfaces/system';
 import { IStream } from '@/utils/interfaces/stream';
+import { ColumnDef } from '@tanstack/react-table';
+import Table from '@/components/common/Table';
+import EditIcon from '@/components/icons/EditIcon';
+import DeleteIcon from '@/components/icons/DeleteIcon';
 
 export default function Page() {
   const router = useRouter();
-  const [streams, setStreams] = useState<IStream[]>([]);
 
   const routes: IRoute[] = [
     { title: 'Home', url: '/' },
     { title: 'Stream Management', url: '' },
   ];
 
-  useEffect(() => {
-    const init = async () => {
-      const response = await fetch(`/api/v1/streams`, { method: 'GET' });
-      const data = await response.json();
+  async function fetchData(options: { page: number; limit: number }): Promise<{
+    data: IStream[];
+    total: number;
+  }> {
+    const response = await fetch(
+      `/api/v1/streams?page=${options.page}&limit=${options.limit}`,
+      { method: 'GET' },
+    );
+    const { data, total } = await response.json();
 
-      setStreams(data);
-    };
+    return { data, total };
+  }
 
-    init();
-  }, []);
+  const columns = React.useMemo<ColumnDef<IStream>[]>(
+    () => [
+      { accessorKey: 'name', header: 'Name' },
+      { accessorKey: 'address', header: 'Address' },
+      { accessorKey: 'status', header: 'Status' },
+      {
+        header: 'Actions',
+        cell(props) {
+          const onEditClick = () => {
+            router.push(`/admin/streams/${props.row.original.id}`);
+          };
 
-  const renderKeys: (keyof IStream)[] = ['name', 'address', 'status'];
-
-  const actions: ITableAction[] = [
-    {
-      label: 'Edit',
-      onClick: (id: string) => {
-        router.push(`/admin/streams/${id}`);
+          return (
+            <div className="flex gap-2">
+              <button className="btn btn-sm btn-outline" onClick={onEditClick}>
+                <EditIcon />
+              </button>
+              <button className="btn btn-sm btn-outline btn-error">
+                <DeleteIcon />
+              </button>
+            </div>
+          );
+        },
       },
-    },
-    {
-      label: 'Delete',
-      onClick: (id: string) => {
-        console.log(id);
-      },
-    },
-  ];
-
+    ],
+    [],
+  );
   return (
     <Suspense fallback={<Loading />}>
       {
@@ -60,7 +74,7 @@ export default function Page() {
               Create
             </Link>
           </div>
-          <Table data={streams} keys={renderKeys} actions={actions} />
+          <Table columns={columns} fetchData={fetchData} />
         </div>
       }
     </Suspense>
