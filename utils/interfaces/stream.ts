@@ -1,8 +1,11 @@
 import { StatusEnum, StreamStatusEnum } from '../enums';
 import { ICluster } from './cluster';
+import { IUser } from './user';
 
 export interface IStreamViewer {
   viewerID: string;
+  viewer?: IUser;
+
   streamID: string;
   status: StatusEnum;
 }

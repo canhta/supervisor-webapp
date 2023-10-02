@@ -58,7 +58,7 @@ export default function Page() {
         },
       },
     ],
-    [],
+    [router],
   );
   return (
     <Suspense fallback={<Loading />}>

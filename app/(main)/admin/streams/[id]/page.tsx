@@ -6,15 +6,17 @@ import Breadcrumb from '@/components/common/Breadcrumb';
 import Loading from '@/components/common/Loading';
 import { StatusEnum } from '@/utils/enums';
 import { ICluster } from '@/utils/interfaces/cluster';
-import { IStream } from '@/utils/interfaces/stream';
+import { IStream, IStreamViewer } from '@/utils/interfaces/stream';
 import { IRoute } from '@/utils/interfaces/system';
 import { IUser } from '@/utils/interfaces/user';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { SelectOption } from '@/utils/interfaces/react-select';
+import { MultiValue } from 'react-select';
 
 function Page({ params }: { params: { id: string } }) {
   const [stream, setStream] = useState<IStream>();
+  const [viewers, setViewers] = useState<SelectOption[]>([]);
   const [clusters, setClusters] = useState<ICluster[]>([]);
   const [isGrading, setIsGrading] = useState<boolean>(false);
 
@@ -36,53 +38,56 @@ function Page({ params }: { params: { id: string } }) {
       const response = await fetch(`/api/v1/streams/${params.id}`, {
         method: 'GET',
       });
-      const jsonRes = await response.json();
+      const streamObject: IStream = await response.json();
 
-      setStream(jsonRes);
+      setStream(streamObject);
     };
 
     fetchStream();
     fetchClusters();
   }, [params.id]);
 
-  const selectedUserIDs = useMemo(
-    () =>
-      stream?.streamViewers
-        ?.filter((item) => item.status === StatusEnum.Active)
-        .map((item) => item.viewerID) ?? [],
-    [stream?.streamViewers],
-  );
+  useEffect(() => {
+    if (stream?.streamViewers) {
+      const defaultUsers =
+        stream?.streamViewers?.reduce(
+          (acc: SelectOption[], item: IStreamViewer) => {
+            if (item.status === StatusEnum.Active && item.viewer) {
+              const option: SelectOption = {
+                value: item.viewer.id,
+                label: `${item.viewer.firstName} ${item.viewer.lastName}`,
+                isDisabled: false,
+              };
 
-  async function fetchUser(options: { page: number; limit: number }): Promise<{
-    data: IUser[];
-    total: number;
-  }> {
-    const response = await fetch(
-      `/api/v1/users?page=${options.page}&limit=${options.limit}`,
-      { method: 'GET' },
-    );
-    const { data, total } = await response.json();
+              acc.push(option);
+            }
 
-    return { data, total };
-  }
+            return acc;
+          },
+          [],
+        ) ?? [];
+
+      setViewers(defaultUsers);
+    }
+  }, [stream]);
 
   const loadUserOptions = (inputValue: string): Promise<SelectOption[]> =>
-    fetch(`/api/v1/users?search=${inputValue}`, { method: 'GET' }).then(
-      async (res) => {
-        if (!res.ok) {
-          return [];
-        }
+    fetch(`/api/v1/users?limit=500&search=${inputValue}`, {
+      method: 'GET',
+    }).then(async (res) => {
+      if (!res.ok) {
+        return [];
+      }
 
-        const { data } = await res.json();
-        return data?.map(
-          (item: IUser): SelectOption => ({
-            value: item.id,
-            label: `${item.firstName} ${item.lastName}`,
-            isDisabled: false,
-          }),
-        );
-      },
-    );
+      const { data } = await res.json();
+      return data?.map(
+        (item: IUser): SelectOption => ({
+          value: item.id,
+          label: `${item.firstName} ${item.lastName}`,
+          isDisabled: false,
+        }),
+      );
+    });
 
   const onUpdate = (body: string): Promise<Response> => {
     return fetch(`/api/v1/streams/${params.id}`, { method: 'PATCH', body });
@@ -92,12 +97,21 @@ function Page({ params }: { params: { id: string } }) {
     toast.success('Update stream successfully');
   };
 
+  const onGrandChange = (newValue: MultiValue<SelectOption>): void => {
+    setViewers([...newValue]);
+  };
+
   const onGrandeViewAccess = async (): Promise<void> => {
     setIsGrading(true);
 
+    const records = viewers.map((item: SelectOption) => ({
+      status: StatusEnum.Active,
+      user: { id: item.value },
+    }));
+
     const response = await fetch(`/api/v1/streams/${params.id}/access`, {
       method: 'POST',
-      body: JSON.stringify({}),
+      body: JSON.stringify({ records }),
     });
 
     setIsGrading(false);
@@ -130,11 +144,13 @@ function Page({ params }: { params: { id: string } }) {
         />
       </div>
       <div className="border-solid border-2 rounded-md p-4 mt-4">
-        <h3 className="pb-4 font-bold text-lg">Grande view access</h3>
+        <h3 className="pb-4 font-bold text-lg">View access</h3>
         <AsyncSelect
           isMulti
           cacheOptions
           defaultOptions
+          value={viewers}
+          onChange={onGrandChange}
           loadOptions={loadUserOptions}
         />
         <div className="flex mt-4 justify-end gap-4 w-full">
