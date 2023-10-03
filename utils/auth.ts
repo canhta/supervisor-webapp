@@ -55,7 +55,7 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt(params) {
-      if (params.user) {
+      if (params?.user) {
         params.token = params.user as unknown as JWT;
       }
 
@@ -71,7 +71,7 @@ export const authOptions: NextAuthOptions = {
       return params.token;
     },
     async session({ session, token }) {
-      if (token.user) {
+      if (token?.user) {
         session.user = token.user as any;
         (session as any).token = token.token;
       }

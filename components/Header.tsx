@@ -10,7 +10,7 @@ export default async function Header(props: { children: React.ReactNode }) {
 
   const routes: IRoute[] = [{ title: 'Streams', url: '/app/streams' }];
 
-  if (session.user.role === UserRole.Admin) {
+  if (session?.user?.role === UserRole.Admin) {
     routes.push(
       { title: 'A | Users', url: '/admin/users' },
       { title: 'A | Streams', url: '/admin/streams' },
