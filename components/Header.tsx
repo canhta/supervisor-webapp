@@ -1,17 +1,21 @@
 import Link from 'next/link';
 import { getSession } from '@/utils/session';
+import { IRoute } from '@/utils/interfaces/system';
+import { UserRole } from '@/utils/enums';
 import { SignOutButton } from './common/Buttons';
 import Dashboard from './Dashboard';
-import { IRoute } from '@/utils/interfaces/system';
 
 export default async function Header(props: { children: React.ReactNode }) {
   const session = await getSession();
 
-  const routes: IRoute[] = [
-    { title: 'Users', url: '/admin/users' },
-    { title: 'Streams', url: '/admin/streams' },
-    { title: 'Side bar item 3', url: '/sidebar-3' },
-  ];
+  const routes: IRoute[] = [{ title: 'Streams', url: '/app/streams' }];
+
+  if (session.user.role === UserRole.Admin) {
+    routes.push(
+      { title: 'A | Users', url: '/admin/users' },
+      { title: 'A | Streams', url: '/admin/streams' },
+    );
+  }
 
   const userRoutes: IRoute[] = [
     { title: 'Side bar item 1', url: '/sidebar-1' },
