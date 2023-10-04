@@ -18,6 +18,7 @@ export interface IStream {
   id: string;
   status: StreamStatusEnum;
   createdAt: string;
+  createdBy?: IUser;
   updatedAt: string;
   deletedAt: string | null;
   streamViewers?: IStreamViewer[];

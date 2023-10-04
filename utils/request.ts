@@ -16,14 +16,16 @@ export async function handleChangeRequest(
     Authorization: `Bearer ${(session as any).token}`,
   };
 
-  const parsed = resourceSchema.safeParse(JSON.parse(req.body));
-  if (!parsed.success) {
-    const errors: Record<string, string> = {};
-    parsed.error.issues.forEach((issue) => {
-      errors[issue.path[0]] = issue.message;
-    });
+  if (req.body) {
+    const parsed = resourceSchema.safeParse(JSON.parse(req.body));
+    if (!parsed.success) {
+      const errors: Record<string, string> = {};
+      parsed.error.issues.forEach((issue) => {
+        errors[issue.path[0]] = issue.message;
+      });
 
-    return res.status(400).json(errors);
+      return res.status(400).json(errors);
+    }
   }
 
   const apiResponse = await fetch(`${ENDPOINT_URL}${req.url}`, {

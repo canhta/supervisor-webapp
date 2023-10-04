@@ -1,5 +1,5 @@
 import { StatusEnum } from '@/utils/enums';
-import { handleChangeRequest, handleGetRequest } from '@/utils/request';
+import { handleChangeRequest } from '@/utils/request';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { z } from 'zod';
 

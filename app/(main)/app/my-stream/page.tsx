@@ -11,13 +11,16 @@ import { ColumnDef } from '@tanstack/react-table';
 import Table from '@/components/common/Table';
 import EditIcon from '@/components/icons/EditIcon';
 import DeleteIcon from '@/components/icons/DeleteIcon';
+import PlayIcon from '@/components/icons/PlayIcon';
+import { StreamStatusEnum } from '@/utils/enums';
+import StopIcon from '@/components/icons/StopIcon';
 
 export default function Page() {
   const router = useRouter();
 
   const routes: IRoute[] = [
     { title: 'Home', url: '/' },
-    { title: 'Stream Management', url: '' },
+    { title: 'My Stream', url: '' },
   ];
 
   async function fetchData(options: { page: number; limit: number }): Promise<{
@@ -33,31 +36,48 @@ export default function Page() {
     return { data, total };
   }
 
+  async function streamAction(stream: IStream): Promise<void> {
+    const action = stream.status === StreamStatusEnum.Live ? 'stop' : 'start';
+    const response = await fetch(`/api/v1/streams/${stream.id}/${action}`, {
+      method: 'POST',
+    });
+
+    const data = await response.json();
+
+    console.log('Start stream response', data);
+  }
+
   const columns = React.useMemo<ColumnDef<IStream>[]>(
     () => [
       { accessorKey: 'name', header: 'Name' },
       { accessorKey: 'address', header: 'Address' },
       { accessorKey: 'status', header: 'Status' },
-      {
-        header: 'Created By',
-        cell({ row: { original } }) {
-          if (original.createdBy) {
-            return `${original.createdBy.firstName} ${original.createdBy.lastName}`;
-          }
-
-          return null;
-        },
-      },
       { accessorKey: 'createdAt', header: 'Created At' },
       {
         header: 'Actions',
-        cell(props) {
+        cell({ row: { original } }) {
           const onEditClick = () => {
-            router.push(`/admin/streams/${props.row.original.id}`);
+            router.push(`/admin/streams/${original.id}`);
           };
 
           return (
             <div className="flex gap-2">
+              {original.status === StreamStatusEnum.Live ? (
+                <button
+                  className="btn btn-sm btn-outline btn-secondary"
+                  onClick={() => streamAction(original)}
+                >
+                  <StopIcon />
+                </button>
+              ) : (
+                <button
+                  className="btn btn-sm btn-outline btn-secondary"
+                  onClick={() => streamAction(original)}
+                >
+                  <PlayIcon />
+                </button>
+              )}
+
               <button className="btn btn-sm btn-outline" onClick={onEditClick}>
                 <EditIcon />
               </button>

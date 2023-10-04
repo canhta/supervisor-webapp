@@ -1,6 +1,5 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
 import Breadcrumb from '@/components/common/Breadcrumb';
 import Loading from '@/components/common/Loading';
 import { IStream } from '@/utils/interfaces/stream';
@@ -12,7 +11,7 @@ const StreamPage = () => {
   const [streams, setStreams] = useState<IStream[]>([]);
   const routes: IRoute[] = [
     { title: 'Home', url: '/' },
-    { title: 'View Stream', url: '' },
+    { title: 'Streams', url: '' },
   ];
 
   useEffect(() => {
@@ -35,13 +34,6 @@ const StreamPage = () => {
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
         <Breadcrumb routes={routes} />
-        <Link
-          type="button"
-          className="btn btn-sm btn-primary"
-          href={'/admin/streams/create'}
-        >
-          Create
-        </Link>
       </div>
       <div className="main">
         {isLoading ? (

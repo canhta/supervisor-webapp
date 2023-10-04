@@ -1,10 +1,12 @@
 'use client';
 import Breadcrumb from '@/components/common/Breadcrumb';
+import { Checkbox } from '@/components/common/Checkbox';
 import { Input } from '@/components/common/Input';
 import Loading from '@/components/common/Loading';
 import { IRoute } from '@/utils/interfaces/system';
 import Link from 'next/link';
 import { FormEvent, Suspense, useState } from 'react';
+import { toast } from 'react-toastify';
 
 interface UserForm {
   firstName?: string;
@@ -12,6 +14,7 @@ interface UserForm {
   password?: string;
   confirmPassword?: string;
   email?: string;
+  canStream?: boolean;
 }
 
 const CreateUserPage = () => {
@@ -27,6 +30,7 @@ const CreateUserPage = () => {
     password: '',
     confirmPassword: '',
     email: '',
+    canStream: false,
   });
 
   const [errors, setErrors] = useState<UserForm>({});
@@ -40,13 +44,21 @@ const CreateUserPage = () => {
     });
   };
 
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: checked,
+    });
+  };
+
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsLoading(true);
     setErrors({});
 
     try {
-      const response = await fetch('/api/users', {
+      const response = await fetch('/api/v1/users', {
         method: 'POST',
         body: JSON.stringify(formData),
       });
@@ -55,8 +67,7 @@ const CreateUserPage = () => {
         return setErrors(await response.json());
       }
 
-      const data = await response.json();
-      alert('Create user successfully! (TODO: using toast)');
+      toast.success('Create new user successfully');
     } catch (error: any) {
       setErrors(error.message);
       console.error(error);
@@ -117,6 +128,13 @@ const CreateUserPage = () => {
                 error={errors['confirmPassword']}
               />
             </div>
+
+            <Checkbox
+              name="canStream"
+              label="Can Stream"
+              checked={formData.canStream}
+              onChange={handleCheckboxChange}
+            />
 
             <div className="flex mt-4 justify-end gap-4 w-full">
               <Link type="button" className="btn " href={'/admin/users'}>

@@ -31,7 +31,21 @@ export default function Page() {
     () => [
       { accessorKey: 'firstName', header: 'First Name' },
       { accessorKey: 'lastName', header: 'Last Name' },
+      { accessorKey: 'email', header: 'Email' },
       { accessorKey: 'status', header: 'Status' },
+      {
+        header: 'Can Stream',
+        cell(props) {
+          return (
+            <input
+              type="checkbox"
+              checked={props.row.original.canStream}
+              className="checkbox"
+              readOnly
+            />
+          );
+        },
+      },
     ],
     [],
   );

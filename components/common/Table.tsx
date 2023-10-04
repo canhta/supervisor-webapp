@@ -8,6 +8,7 @@ import {
   flexRender,
 } from '@tanstack/react-table';
 import { useQuery } from '@tanstack/react-query';
+import Loading from './Loading';
 
 interface Props<T extends Object> {
   columns: ColumnDef<T>[];
@@ -16,15 +17,9 @@ interface Props<T extends Object> {
     limit: number;
   }) => Promise<{ data: T[]; total: number }>;
   enableRowSelection?: boolean;
-  defaultSelectedIDs?: string[];
 }
 
-const Table: FC<Props<any>> = ({
-  columns,
-  enableRowSelection,
-  defaultSelectedIDs,
-  fetchData,
-}) => {
+const Table: FC<Props<any>> = ({ columns, enableRowSelection, fetchData }) => {
   const [rowSelection, onRowSelectionChange] = React.useState({});
   const [{ pageIndex, pageSize }, onPaginationChange] =
     useState<PaginationState>({
@@ -200,7 +195,6 @@ const Table: FC<Props<any>> = ({
             </option>
           ))}
         </select>
-        {dataQuery.isFetching ? 'Loading...' : null}
       </div>
     </div>
   );

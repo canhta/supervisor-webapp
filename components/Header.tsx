@@ -8,7 +8,10 @@ import Dashboard from './Dashboard';
 export default async function Header(props: { children: React.ReactNode }) {
   const session = await getSession();
 
-  const routes: IRoute[] = [{ title: 'Streams', url: '/app/streams' }];
+  const routes: IRoute[] = [
+    { title: 'View Streams', url: '/app/streams' },
+    { title: 'My Stream', url: '/app/my-stream' },
+  ];
 
   if (session?.user?.role === UserRole.Admin) {
     routes.push(
