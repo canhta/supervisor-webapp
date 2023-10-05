@@ -9,8 +9,8 @@ export default async function Header(props: { children: React.ReactNode }) {
   const session = await getSession();
 
   const routes: IRoute[] = [
-    { title: 'View Streams', url: '/app/streams' },
-    { title: 'My Stream', url: '/app/my-stream' },
+    { title: 'Dashboard', url: '/' },
+    { title: 'My Stream', url: '/my-stream' },
   ];
 
   if (session?.user?.role === UserRole.Admin) {

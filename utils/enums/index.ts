@@ -9,9 +9,15 @@ export enum StatusEnum {
 }
 
 export enum StreamStatusEnum {
-  Upcoming = 'Upcoming',
-  Starting = 'Starting',
+  Idle = 'Idle',
+  Publishing = 'Publishing',
   Live = 'Live',
+  UnPublishing = 'UnPublishing',
+}
+
+export enum ViewStatusEnum {
+  Idle = 'Idle',
+  Viewing = 'Viewing',
   Stopping = 'Stopping',
-  Offline = 'Offline',
+  Blocked = 'Blocked',
 }
