@@ -11,6 +11,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import Table from '@/components/common/Table';
 import EditIcon from '@/components/icons/EditIcon';
 import DeleteIcon from '@/components/icons/DeleteIcon';
+import { formatDate } from '@/utils/formatDate';
 
 export default function Page() {
   const router = useRouter();
@@ -48,7 +49,14 @@ export default function Page() {
           return null;
         },
       },
-      { accessorKey: 'createdAt', header: 'Created At' },
+      { cell({ row: { original } }) {
+        if (original.createdAt) {
+          return formatDate(original.createdAt);
+        }
+
+        return null;
+      }
+      , header: 'Created At' },
       {
         header: 'Actions',
         cell(props) {
