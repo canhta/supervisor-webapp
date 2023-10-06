@@ -120,7 +120,7 @@ function StreamForm({
 
       <div className="flex mt-4 justify-end gap-4 w-full">
         <button type="submit" className="btn btn-primary" disabled={isLoading}>
-          {isLoading ? 'Updating...' : 'Update'}
+          {isLoading ? 'Submitting...' : initData ? 'Update' : 'Create'}
         </button>
       </div>
     </form>
