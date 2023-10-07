@@ -64,3 +64,26 @@ export async function handleGetRequest(
 
   return res.status(200).json(await apiResponse.json());
 }
+
+export async function handleDeleteRequest(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  const session = await getServerSession(req, res, authOptions);
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${(session as any).token}`,
+  };
+
+  const apiResponse = await fetch(`${ENDPOINT_URL}${req.url}`, {
+    method: req.method,
+    headers,
+  });
+
+  if (!apiResponse.ok) {
+    const { errors, status } = await apiResponse.json();
+    return res.status(status).json(errors);
+  }
+
+  return res.status(200).json({});
+}

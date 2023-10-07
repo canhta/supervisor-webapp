@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { Suspense } from 'react';
+import { toast } from 'react-toastify';
+import React, { Suspense, useState } from 'react';
 import Loading from '@/components/common/Loading';
 import Breadcrumb from '@/components/common/Breadcrumb';
 import { IRoute } from '@/utils/interfaces/system';
@@ -12,9 +13,13 @@ import Table from '@/components/common/Table';
 import EditIcon from '@/components/icons/EditIcon';
 import DeleteIcon from '@/components/icons/DeleteIcon';
 import { formatDate } from '@/utils/formatDate';
+import ConfirmModal from '@/components/common/ConfirmModal';
+
+const htmlForDelete = 'delete-stream-modal';
 
 export default function Page() {
   const router = useRouter();
+  const [deletingID, setDeletingID] = useState<IStream['id'] | null>(null);
 
   const routes: IRoute[] = [
     { title: 'Home', url: '/' },
@@ -34,6 +39,22 @@ export default function Page() {
     return { data, total };
   }
 
+  const onDeleteSubmit = async () => {
+    if (deletingID) {
+      const res = await fetch(`/api/v1/streams/${deletingID}`, {
+        method: 'DELETE',
+      });
+
+      if (!res.ok) {
+        toast.error('Something went wrong, please try again later.');
+      } else {
+        toast.success('Stream deleted successfully.');
+
+        // TODO: Reload data
+      }
+    }
+  };
+
   const columns = React.useMemo<ColumnDef<IStream>[]>(
     () => [
       { accessorKey: 'name', header: 'Name' },
@@ -49,14 +70,16 @@ export default function Page() {
           return null;
         },
       },
-      { cell({ row: { original } }) {
-        if (original.createdAt) {
-          return formatDate(original.createdAt);
-        }
+      {
+        cell({ row: { original } }) {
+          if (original.createdAt) {
+            return formatDate(original.createdAt);
+          }
 
-        return null;
-      }
-      , header: 'Created At' },
+          return null;
+        },
+        header: 'Created At',
+      },
       {
         header: 'Actions',
         cell(props) {
@@ -64,14 +87,23 @@ export default function Page() {
             router.push(`/admin/streams/${props.row.original.id}`);
           };
 
+          const onDeleteClicked = () => {
+            setDeletingID(props.row.original.id);
+          };
+
           return (
             <div className="flex gap-2">
               <button className="btn btn-sm btn-outline" onClick={onEditClick}>
                 <EditIcon />
               </button>
-              <button className="btn btn-sm btn-outline btn-error">
+
+              <label
+                className="btn btn-sm btn-outline btn-error"
+                htmlFor={htmlForDelete}
+                onClick={onDeleteClicked}
+              >
                 <DeleteIcon />
-              </button>
+              </label>
             </div>
           );
         },
@@ -96,6 +128,15 @@ export default function Page() {
           <Table columns={columns} fetchData={fetchData} />
         </div>
       }
+      <ConfirmModal
+        htmlFor={htmlForDelete}
+        title={'Delete Stream'}
+        content={'Are you sure you want to delete this stream?'}
+        onClose={() => {
+          setDeletingID(null);
+        }}
+        onSubmit={onDeleteSubmit}
+      />
     </Suspense>
   );
 }
