@@ -65,8 +65,15 @@ const CreateUserPage = () => {
 
       if (!response.ok) {
         return setErrors(await response.json());
-      }
-
+      } 
+      setFormData({
+        firstName: '',
+        lastName: '',
+        password: '',
+        confirmPassword: '',
+        email: '',
+        canStream: false,
+      });
       toast.success('Create new user successfully');
     } catch (error: any) {
       setErrors(error.message);
