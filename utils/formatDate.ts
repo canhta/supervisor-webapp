@@ -1,10 +1,7 @@
-import { DateTime } from "luxon";
+import { DateTime } from 'luxon';
 
-function formatDate (date:string) {
-    const newDate = DateTime.fromISO(date);
-    return newDate.toFormat('dd - LL - yyyy');
-}
-
-export {
-    formatDate
+export function formatDate(date: string) {
+  return DateTime.fromISO(date).toLocaleString(
+    DateTime.DATETIME_SHORT_WITH_SECONDS,
+  );
 }
