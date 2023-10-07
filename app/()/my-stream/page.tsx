@@ -14,6 +14,7 @@ import DeleteIcon from '@/components/icons/DeleteIcon';
 import PlayIcon from '@/components/icons/PlayIcon';
 import { StreamStatusEnum } from '@/utils/enums';
 import StopIcon from '@/components/icons/StopIcon';
+import { formatDate } from '@/utils/formatDate';
 
 export default function Page() {
   const router = useRouter();
@@ -52,7 +53,13 @@ export default function Page() {
       { accessorKey: 'name', header: 'Name' },
       { accessorKey: 'address', header: 'Address' },
       { accessorKey: 'status', header: 'Status' },
-      { accessorKey: 'createdAt', header: 'Created At' },
+      { cell({ row: { original } }) {
+        if (original.createdAt) {
+          return formatDate(original.createdAt);
+        }
+
+        return null;
+      }, header: 'Created At' },
       {
         header: 'Actions',
         cell({ row: { original } }) {
