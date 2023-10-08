@@ -11,7 +11,7 @@ export interface ReactFlvPlayerProps {
   stashInitialSize?: number | undefined;
   height?: number;
   width?: number;
-  isMuted?: false;
+  isMuted?: boolean;
   url: string;
   videoProps?: React.DetailedHTMLProps<
     React.VideoHTMLAttributes<HTMLVideoElement>,

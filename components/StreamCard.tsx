@@ -1,7 +1,7 @@
+import React, { useState } from 'react';
 import { StreamStatusEnum } from '@/utils/enums';
 import { IStream } from '@/utils/interfaces/stream';
 import classNames from 'classnames';
-import React, { useMemo, useState } from 'react';
 import FlvPlayer from './FlvPlayer';
 
 interface Props {
@@ -12,12 +12,12 @@ const StreamCard = ({ data }: Props) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
-    <div className="card w-full aspect-video select-none border">
+    <div className="card w-full aspect-video select-none">
       {isPlaying && data.flvUrl ? (
-        <FlvPlayer url={data.flvUrl} showControls={true} />
+        <FlvPlayer url={data.flvUrl} showControls={true} isMuted={true} />
       ) : (
         <div
-          className={classNames('card-body', {
+          className={classNames('card-body border', {
             'cursor-pointer': data.status === StreamStatusEnum.Live,
           })}
           onClick={() => {
