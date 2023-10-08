@@ -3,7 +3,6 @@ import React, { FormEvent, useEffect, useState } from 'react';
 import { Input } from './common/Input';
 import { Select } from './common/Select';
 import { ICluster } from '@/utils/interfaces/cluster';
-import Link from 'next/link';
 
 interface Props {
   initData?: IStream;
@@ -25,7 +24,6 @@ function StreamForm({
   const [formData, setFormData] = useState<CreateStreamDto>({
     name: '',
     address: '',
-    status: '',
     clusterID: undefined,
   });
 
@@ -110,7 +108,7 @@ function StreamForm({
           error={errors['clusterID']}
         />
       </div>
-      <div className='flex gap-4 items-center'>
+      <div className="flex gap-4 items-center">
         <Input
           name="address"
           label="Address"
@@ -119,15 +117,16 @@ function StreamForm({
           onChange={handleInputChange}
           error={errors['address']}
         />
-        <Input
-          name="status"
-          label="Status"
-          type="text"
-          disabled={!!initData}
-          value={initData?.status}
-          onChange={handleInputChange}
-          error={errors['status']}
-        />
+        {initData?.status && (
+          <Input
+            name="status"
+            label="Status"
+            type="text"
+            disabled={!!initData}
+            value={initData?.status}
+            error={errors['status']}
+          />
+        )}
       </div>
       <div className="flex mt-4 justify-end gap-4 w-full">
         <button type="submit" className="btn btn-primary" disabled={isLoading}>
