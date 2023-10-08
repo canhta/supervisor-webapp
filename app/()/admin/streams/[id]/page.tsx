@@ -17,6 +17,7 @@ import { MultiValue } from 'react-select';
 function Page({ params }: { params: { id: string } }) {
   const [stream, setStream] = useState<IStream>();
   const [viewers, setViewers] = useState<SelectOption[]>([]);
+  const [settingStream, setSettingStream] = useState<any>()
   const [clusters, setClusters] = useState<ICluster[]>([]);
   const [isGrading, setIsGrading] = useState<boolean>(false);
 
@@ -34,6 +35,13 @@ function Page({ params }: { params: { id: string } }) {
       setClusters(data);
     };
 
+    const fetchSetting = async () => {
+      const response = await fetch(`/api/v1/settings`, { method: 'GET' });
+      const data = await response.json();
+
+      setSettingStream(data.streams);
+    };
+
     const fetchStream = async () => {
       const response = await fetch(`/api/v1/streams/${params.id}`, {
         method: 'GET',
@@ -44,6 +52,7 @@ function Page({ params }: { params: { id: string } }) {
     };
 
     fetchStream();
+    fetchSetting();
     fetchClusters();
   }, [params.id]);
 
@@ -98,7 +107,11 @@ function Page({ params }: { params: { id: string } }) {
   };
 
   const onGrandChange = (newValue: MultiValue<SelectOption>): void => {
-    setViewers([...newValue]);
+    if(viewers.length < settingStream?.maxViewersPerStream) {
+      setViewers([...newValue]);
+    } else {
+      toast.error('You can only select up to 5 people!')
+    }
   };
 
   const onGrandeViewAccess = async (): Promise<void> => {
