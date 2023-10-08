@@ -53,13 +53,16 @@ export default function Page() {
       { accessorKey: 'name', header: 'Name' },
       { accessorKey: 'address', header: 'Address' },
       { accessorKey: 'status', header: 'Status' },
-      { cell({ row: { original } }) {
-        if (original.createdAt) {
-          return formatDate(original.createdAt);
-        }
+      {
+        cell({ row: { original } }) {
+          if (original.createdAt) {
+            return formatDate(original.createdAt);
+          }
 
-        return null;
-      }, header: 'Created At' },
+          return null;
+        },
+        header: 'Created At',
+      },
       {
         header: 'Actions',
         cell({ row: { original } }) {
