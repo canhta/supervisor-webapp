@@ -4,7 +4,7 @@ import Footer from '@/components/Footer';
 import Providers from '@/components/Providers';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import '../globals.css';
+import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Admin Dashboard',

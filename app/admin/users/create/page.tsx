@@ -65,7 +65,7 @@ const CreateUserPage = () => {
 
       if (!response.ok) {
         return setErrors(await response.json());
-      } 
+      }
       setFormData({
         firstName: '',
         lastName: '',
