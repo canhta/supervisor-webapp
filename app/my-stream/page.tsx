@@ -45,7 +45,7 @@ export default function Page() {
 
     const data = await response.json();
 
-    console.log('Start stream response', data);
+    prompt('Start streaming via RTMP with this URL:', data.rtmp);
   }
 
   const columns = React.useMemo<ColumnDef<IStream>[]>(
