@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -13,6 +14,12 @@ export const metadata: Metadata = {
 export default async function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <Head>
+        <meta
+          http-equiv="Content-Security-Policy"
+          content="upgrade-insecure-requests"
+        />
+      </Head>
       <Providers>
         <body>
           <ToastContainer />
