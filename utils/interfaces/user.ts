@@ -13,3 +13,6 @@ export interface IUser {
   deletedAt: string | null;
   __entity: string;
 }
+
+export interface UpdateUserDto
+  extends Pick<IUser, 'email' | 'firstName' | 'lastName' | 'canStream'> {}

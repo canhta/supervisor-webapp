@@ -1,18 +1,17 @@
 'use client';
-import * as _ from 'lodash';
+import { useEffect, useState } from 'react';
+import { MultiValue } from 'react-select';
+import { toast } from 'react-toastify';
 import AsyncSelect from 'react-select/async';
 import StreamForm from '@/components/StreamForm';
 import Breadcrumb from '@/components/common/Breadcrumb';
 import Loading from '@/components/common/Loading';
-import { StatusEnum } from '@/utils/enums';
+import { ViewStatusEnum } from '@/utils/enums';
 import { ICluster } from '@/utils/interfaces/cluster';
 import { IStream, IStreamViewer } from '@/utils/interfaces/stream';
 import { IObject, IRoute } from '@/utils/interfaces/system';
 import { IUser } from '@/utils/interfaces/user';
-import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
 import { SelectOption } from '@/utils/interfaces/react-select';
-import { MultiValue } from 'react-select';
 
 function Page({ params }: { params: { id: string } }) {
   const [stream, setStream] = useState<IStream>();
@@ -65,7 +64,7 @@ function Page({ params }: { params: { id: string } }) {
       const defaultUsers =
         stream?.streamViewers?.reduce(
           (acc: SelectOption[], item: IStreamViewer) => {
-            if (item.status === StatusEnum.Active && item.viewer) {
+            if (item.viewer) {
               const option: SelectOption = {
                 value: item.viewer.id,
                 label: `${item.viewer.firstName} ${item.viewer.lastName}`,
@@ -123,10 +122,14 @@ function Page({ params }: { params: { id: string } }) {
   const onGrandeViewAccess = async (): Promise<void> => {
     setIsGrading(true);
 
-    const records = viewers.map((item: SelectOption) => ({
-      status: StatusEnum.Active,
-      user: { id: item.value },
-    }));
+    const records = viewers.map((item: SelectOption) => {
+      const existingRecord = stream?.streamViewers?.find(
+        (sv) => sv.viewerID === item.value,
+      );
+      const status = existingRecord?.status || ViewStatusEnum.Idle;
+
+      return { status, user: { id: item.value } };
+    });
 
     const response = await fetch(`/api/v1/streams/${params.id}/access`, {
       method: 'POST',

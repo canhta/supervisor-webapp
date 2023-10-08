@@ -4,7 +4,7 @@ import { Checkbox } from '@/components/common/Checkbox';
 import { Input } from '@/components/common/Input';
 import Loading from '@/components/common/Loading';
 import { IRoute } from '@/utils/interfaces/system';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { FormEvent, Suspense, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -18,6 +18,7 @@ interface UserForm {
 }
 
 const CreateUserPage = () => {
+  const router = useRouter();
   const routes: IRoute[] = [
     { title: 'Home', url: '/' },
     { title: 'User Management', url: '/admin/users' },
@@ -50,6 +51,10 @@ const CreateUserPage = () => {
       ...formData,
       [name]: checked,
     });
+  };
+
+  const onBackClicked = () => {
+    router.back();
   };
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -144,9 +149,9 @@ const CreateUserPage = () => {
             />
 
             <div className="flex mt-4 justify-end gap-4 w-full">
-              <Link type="button" className="btn " href={'/admin/users'}>
+              <button className="btn" onClick={onBackClicked}>
                 Back
-              </Link>
+              </button>
               <button
                 type="submit"
                 className="btn btn-primary"
