@@ -39,7 +39,7 @@ const StreamPage = () => {
         {isLoading ? (
           <Loading />
         ) : (
-          <div className="flex gap-4">
+          <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {streams.map((stream) => (
               <StreamCard data={stream} key={stream.id} />
             ))}

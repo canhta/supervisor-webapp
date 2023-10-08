@@ -22,6 +22,10 @@ export interface IStream {
   updatedAt: string;
   deletedAt: string | null;
   streamViewers?: IStreamViewer[];
+
+  flvUrl?: string;
+  hlsUrl?: string;
+
   __entity: string;
 }
 

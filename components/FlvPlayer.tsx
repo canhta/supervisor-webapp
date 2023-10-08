@@ -1,6 +1,5 @@
 'use client';
 
-import FlvJs from 'flv.js';
 import { FC, Fragment, useEffect, useRef } from 'react';
 
 export interface ReactFlvPlayerProps {
@@ -20,7 +19,7 @@ export interface ReactFlvPlayerProps {
   >;
 }
 
-export const ReactFlvPlayer: FC<ReactFlvPlayerProps> = (props) => {
+export const FlvPlayer: FC<ReactFlvPlayerProps> = (props) => {
   const {
     height,
     width,
@@ -74,4 +73,4 @@ export const ReactFlvPlayer: FC<ReactFlvPlayerProps> = (props) => {
   );
 };
 
-export default ReactFlvPlayer;
+export default FlvPlayer;
