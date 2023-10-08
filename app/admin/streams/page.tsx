@@ -1,7 +1,4 @@
 'use client';
-
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import React, { Suspense, useState } from 'react';
 import Loading from '@/components/common/Loading';
@@ -14,11 +11,12 @@ import EditIcon from '@/components/icons/EditIcon';
 import DeleteIcon from '@/components/icons/DeleteIcon';
 import { formatDate } from '@/utils/formatDate';
 import ConfirmModal from '@/components/common/ConfirmModal';
+import { useAppRouter } from '@/hooks/routes';
 
 const htmlForDelete = 'delete-stream-modal';
 
 export default function Page() {
-  const router = useRouter();
+  const { getEditStreamView, getCreateStreamView } = useAppRouter();
   const [deletingID, setDeletingID] = useState<IStream['id'] | null>(null);
 
   const routes: IRoute[] = [
@@ -83,24 +81,23 @@ export default function Page() {
       {
         header: 'Actions',
         cell(props) {
-          const onEditClick = () => {
-            router.push(`/admin/streams/${props.row.original.id}`);
-          };
-
-          const onDeleteClicked = () => {
-            setDeletingID(props.row.original.id);
-          };
-
           return (
             <div className="flex gap-2">
-              <button className="btn btn-sm btn-outline" onClick={onEditClick}>
+              <button
+                className="btn btn-sm btn-outline"
+                onClick={() => {
+                  getEditStreamView(props.row.original.id);
+                }}
+              >
                 <EditIcon />
               </button>
 
               <label
                 className="btn btn-sm btn-outline btn-error"
                 htmlFor={htmlForDelete}
-                onClick={onDeleteClicked}
+                onClick={() => {
+                  setDeletingID(props.row.original.id);
+                }}
               >
                 <DeleteIcon />
               </label>
@@ -109,7 +106,7 @@ export default function Page() {
         },
       },
     ],
-    [router],
+    [getEditStreamView],
   );
   return (
     <Suspense fallback={<Loading />}>
@@ -117,13 +114,12 @@ export default function Page() {
         <div className="p-4">
           <div className="flex justify-between items-center mb-4">
             <Breadcrumb routes={routes} />
-            <Link
-              type="button"
+            <button
               className="btn btn-sm btn-primary"
-              href={'/admin/streams/create'}
+              onClick={getCreateStreamView}
             >
               Create
-            </Link>
+            </button>
           </div>
           <Table columns={columns} fetchData={fetchData} />
         </div>

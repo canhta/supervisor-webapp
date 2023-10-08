@@ -1,8 +1,8 @@
 import React, { FormEvent, useEffect, useState } from 'react';
-import { Input } from './common/Input';
+import { useAppRouter } from '@/hooks/routes';
 import { IUser, UpdateUserDto } from '@/utils/interfaces/user';
+import { Input } from './common/Input';
 import { Checkbox } from './common/Checkbox';
-import { useRouter } from 'next/navigation';
 
 interface Props {
   initData?: IUser;
@@ -12,7 +12,7 @@ interface Props {
 }
 
 function UserForm({ initData, onSubmit, onSuccess, onFail }: Props) {
-  const router = useRouter();
+  const { onBack } = useAppRouter();
   const [errors, setErrors] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<UpdateUserDto>({
@@ -72,10 +72,6 @@ function UserForm({ initData, onSubmit, onSuccess, onFail }: Props) {
       ...formData,
       [name]: checked,
     });
-  };
-
-  const onBackClicked = () => {
-    router.back();
   };
 
   return (
@@ -145,9 +141,9 @@ function UserForm({ initData, onSubmit, onSuccess, onFail }: Props) {
         onChange={handleCheckboxChange}
       />
       <div className="flex mt-4 justify-end gap-4 w-full">
-        <button className="btn" onClick={onBackClicked}>
+        <div className="btn" onClick={onBack}>
           Back
-        </button>
+        </div>
         <button type="submit" className="btn btn-primary" disabled={isLoading}>
           {isLoading ? 'Submitting...' : initData ? 'Update' : 'Create'}
         </button>

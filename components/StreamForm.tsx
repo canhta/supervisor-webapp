@@ -1,8 +1,9 @@
-import { CreateStreamDto, IStream } from '@/utils/interfaces/stream';
 import React, { FormEvent, useEffect, useState } from 'react';
+import { CreateStreamDto, IStream } from '@/utils/interfaces/stream';
 import { Input } from './common/Input';
 import { Select } from './common/Select';
 import { ICluster } from '@/utils/interfaces/cluster';
+import { useAppRouter } from '@/hooks/routes';
 
 interface Props {
   initData?: IStream;
@@ -19,6 +20,7 @@ function StreamForm({
   onSuccess,
   onFail,
 }: Props) {
+  const { onBack } = useAppRouter();
   const [errors, setErrors] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<CreateStreamDto>({
@@ -129,6 +131,9 @@ function StreamForm({
         )}
       </div>
       <div className="flex mt-4 justify-end gap-4 w-full">
+        <div className="btn" onClick={onBack}>
+          Back
+        </div>
         <button type="submit" className="btn btn-primary" disabled={isLoading}>
           {isLoading ? 'Submitting...' : initData ? 'Update' : 'Create'}
         </button>

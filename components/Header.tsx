@@ -20,11 +20,7 @@ export default async function Header(props: { children: React.ReactNode }) {
     );
   }
 
-  const userRoutes: IRoute[] = [
-    { title: 'Side bar item 1', url: '/sidebar-1' },
-    { title: 'Side bar item 2', url: '/sidebar-2' },
-    { title: 'Side bar item 3', url: '/sidebar-3' },
-  ];
+  const userRoutes: IRoute[] = [{ title: 'Profile', url: '/me' }];
 
   const getAvatarLetters = (): string => {
     if (session?.user) {
@@ -95,7 +91,7 @@ export default async function Header(props: { children: React.ReactNode }) {
             </ul>
           </div>
         </div>
-        <main>{props.children}</main>
+        <main className="md:min-h-[calc(100vh-120px)]">{props.children}</main>
       </div>
       <div className="drawer-side">
         <label htmlFor="my-drawer-3" className="drawer-overlay"></label>

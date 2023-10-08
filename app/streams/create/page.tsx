@@ -22,8 +22,7 @@ const Page = () => {
 
   const routes: IRoute[] = [
     { title: 'Home', url: '/' },
-    { title: 'Stream Management', url: '/admin/streams' },
-    { title: 'Create New Stream', url: '' },
+    { title: 'Create New', url: '' },
   ];
 
   const onCreate = (body: string): Promise<Response> => {

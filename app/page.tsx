@@ -9,10 +9,7 @@ import StreamCard from '@/components/StreamCard';
 const StreamPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [streams, setStreams] = useState<IStream[]>([]);
-  const routes: IRoute[] = [
-    { title: 'Home', url: '/' },
-    { title: 'Streams', url: '' },
-  ];
+  const routes: IRoute[] = [{ title: 'Dashboard', url: '' }];
 
   useEffect(() => {
     async function init() {

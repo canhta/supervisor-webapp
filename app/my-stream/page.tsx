@@ -1,28 +1,26 @@
 'use client';
-
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import React, { Suspense } from 'react';
 import Loading from '@/components/common/Loading';
 import Breadcrumb from '@/components/common/Breadcrumb';
 import { IRoute } from '@/utils/interfaces/system';
 import { IStream } from '@/utils/interfaces/stream';
 import { ColumnDef } from '@tanstack/react-table';
+import { StreamStatusEnum } from '@/utils/enums';
 import Table from '@/components/common/Table';
 import EditIcon from '@/components/icons/EditIcon';
 import DeleteIcon from '@/components/icons/DeleteIcon';
 import PlayIcon from '@/components/icons/PlayIcon';
-import { StreamStatusEnum } from '@/utils/enums';
 import StopIcon from '@/components/icons/StopIcon';
 import { formatDate } from '@/utils/formatDate';
+import { useAppRouter } from '@/hooks/routes';
+
+const routes: IRoute[] = [
+  { title: 'Home', url: '/' },
+  { title: 'My Stream', url: '' },
+];
 
 export default function Page() {
-  const router = useRouter();
-
-  const routes: IRoute[] = [
-    { title: 'Home', url: '/' },
-    { title: 'My Stream', url: '' },
-  ];
+  const { getCreateStreamView, getEditStreamView } = useAppRouter();
 
   async function fetchData(options: { page: number; limit: number }): Promise<{
     data: IStream[];
@@ -66,10 +64,6 @@ export default function Page() {
       {
         header: 'Actions',
         cell({ row: { original } }) {
-          const onEditClick = () => {
-            router.push(`/admin/streams/${original.id}`);
-          };
-
           return (
             <div className="flex gap-2">
               {original.status === StreamStatusEnum.Live ? (
@@ -88,7 +82,12 @@ export default function Page() {
                 </button>
               )}
 
-              <button className="btn btn-sm btn-outline" onClick={onEditClick}>
+              <button
+                className="btn btn-sm btn-outline"
+                onClick={() => {
+                  getEditStreamView(original.id);
+                }}
+              >
                 <EditIcon />
               </button>
               <button className="btn btn-sm btn-outline btn-error">
@@ -99,7 +98,7 @@ export default function Page() {
         },
       },
     ],
-    [router],
+    [getEditStreamView],
   );
   return (
     <Suspense fallback={<Loading />}>
@@ -107,13 +106,12 @@ export default function Page() {
         <div className="p-4">
           <div className="flex justify-between items-center mb-4">
             <Breadcrumb routes={routes} />
-            <Link
-              type="button"
+            <button
               className="btn btn-sm btn-primary"
-              href={'/admin/streams/create'}
+              onClick={getCreateStreamView}
             >
               Create
-            </Link>
+            </button>
           </div>
           <Table columns={columns} fetchData={fetchData} />
         </div>

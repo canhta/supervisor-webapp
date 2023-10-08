@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -8,18 +7,18 @@ import 'react-toastify/dist/ReactToastify.css';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Admin Dashboard',
+  title: 'Supervisor',
 };
 
 export default async function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <Head>
+      <head>
         <meta
-          http-equiv="Content-Security-Policy"
+          httpEquiv="Content-Security-Policy"
           content="upgrade-insecure-requests"
         />
-      </Head>
+      </head>
       <Providers>
         <body>
           <ToastContainer />

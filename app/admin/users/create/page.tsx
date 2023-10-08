@@ -3,8 +3,8 @@ import Breadcrumb from '@/components/common/Breadcrumb';
 import { Checkbox } from '@/components/common/Checkbox';
 import { Input } from '@/components/common/Input';
 import Loading from '@/components/common/Loading';
+import { useAppRouter } from '@/hooks/routes';
 import { IRoute } from '@/utils/interfaces/system';
-import { useRouter } from 'next/navigation';
 import { FormEvent, Suspense, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -18,7 +18,8 @@ interface UserForm {
 }
 
 const CreateUserPage = () => {
-  const router = useRouter();
+  const { onBack } = useAppRouter();
+
   const routes: IRoute[] = [
     { title: 'Home', url: '/' },
     { title: 'User Management', url: '/admin/users' },
@@ -51,10 +52,6 @@ const CreateUserPage = () => {
       ...formData,
       [name]: checked,
     });
-  };
-
-  const onBackClicked = () => {
-    router.back();
   };
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -149,9 +146,9 @@ const CreateUserPage = () => {
             />
 
             <div className="flex mt-4 justify-end gap-4 w-full">
-              <button className="btn" onClick={onBackClicked}>
+              <div className="btn" onClick={onBack}>
                 Back
-              </button>
+              </div>
               <button
                 type="submit"
                 className="btn btn-primary"

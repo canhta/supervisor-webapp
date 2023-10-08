@@ -1,9 +1,7 @@
 'use client';
-import React, { Suspense, useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
-import { useRouter } from 'next/navigation';
-import Loading from '@/components/common/Loading';
 import Breadcrumb from '@/components/common/Breadcrumb';
 import { IRoute } from '@/utils/interfaces/system';
 import { IUser } from '@/utils/interfaces/user';
@@ -12,11 +10,12 @@ import EditIcon from '@/components/icons/EditIcon';
 import DeleteIcon from '@/components/icons/DeleteIcon';
 import { ColumnDef } from '@tanstack/react-table';
 import ConfirmModal from '@/components/common/ConfirmModal';
+import { useAppRouter } from '@/hooks/routes';
 
 const htmlForDelete = 'delete-user-modal';
 
 export default function Page() {
-  const router = useRouter();
+  const { getEditUserView } = useAppRouter();
   const [deletingID, setDeletingID] = useState<IUser['id'] | null>(null);
   const routes: IRoute[] = [
     { title: 'Home', url: '/' },
@@ -74,23 +73,22 @@ export default function Page() {
       {
         header: 'Actions',
         cell(props) {
-          const onEditClick = () => {
-            router.push(`/admin/users/${props.row.original.id}`);
-          };
-
-          const onDeleteClicked = () => {
-            setDeletingID(props.row.original.id);
-          };
-
           return (
             <div className="flex gap-2">
-              <button className="btn btn-sm btn-outline" onClick={onEditClick}>
+              <button
+                className="btn btn-sm btn-outline"
+                onClick={() => {
+                  getEditUserView(props.row.original.id);
+                }}
+              >
                 <EditIcon />
               </button>
               <label
                 className="btn btn-sm btn-outline btn-error"
                 htmlFor={htmlForDelete}
-                onClick={onDeleteClicked}
+                onClick={() => {
+                  setDeletingID(props.row.original.id);
+                }}
               >
                 <DeleteIcon />
               </label>
@@ -99,26 +97,24 @@ export default function Page() {
         },
       },
     ],
-    [router],
+    [getEditUserView],
   );
 
   return (
-    <Suspense fallback={<Loading />}>
-      {
-        <div className="p-4">
-          <div className="flex justify-between items-center mb-4">
-            <Breadcrumb routes={routes} />
-            <Link
-              type="button"
-              className="btn btn-sm btn-primary"
-              href={'/admin/users/create'}
-            >
-              Create
-            </Link>
-          </div>
-          <Table columns={columns} fetchData={fetchData} />
+    <>
+      <div className="p-4">
+        <div className="flex justify-between items-center mb-4">
+          <Breadcrumb routes={routes} />
+          <Link
+            type="button"
+            className="btn btn-sm btn-primary"
+            href={'/admin/users/create'}
+          >
+            Create
+          </Link>
         </div>
-      }
+        <Table columns={columns} fetchData={fetchData} />
+      </div>
       <ConfirmModal
         htmlFor={htmlForDelete}
         title={'Delete User'}
@@ -128,6 +124,6 @@ export default function Page() {
         }}
         onSubmit={onDeleteSubmit}
       />
-    </Suspense>
+    </>
   );
 }
