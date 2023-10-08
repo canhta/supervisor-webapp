@@ -20,6 +20,7 @@ function Page({ params }: { params: { id: string } }) {
   const [settingStream, setSettingStream] = useState<any>()
   const [clusters, setClusters] = useState<ICluster[]>([]);
   const [isGrading, setIsGrading] = useState<boolean>(false);
+  const [error, setError] = useState('');
 
   const routes: IRoute[] = [
     { title: 'Home', url: '/' },
@@ -110,7 +111,7 @@ function Page({ params }: { params: { id: string } }) {
     if(viewers.length < settingStream?.maxViewersPerStream) {
       setViewers([...newValue]);
     } else {
-      toast.error('You can only select up to 5 people!')
+      setError('You can only select up to 5 people!')
     }
   };
 
@@ -166,6 +167,7 @@ function Page({ params }: { params: { id: string } }) {
           onChange={onGrandChange}
           loadOptions={loadUserOptions}
         />
+        <span className='text-red-500 my-2 block'>{error}</span>
         <div className="flex mt-4 justify-end gap-4 w-full">
           <button
             type="button"
