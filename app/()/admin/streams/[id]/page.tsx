@@ -7,9 +7,9 @@ import Loading from '@/components/common/Loading';
 import { StatusEnum } from '@/utils/enums';
 import { ICluster } from '@/utils/interfaces/cluster';
 import { IStream, IStreamViewer } from '@/utils/interfaces/stream';
-import { IRoute } from '@/utils/interfaces/system';
+import { IObject, IRoute } from '@/utils/interfaces/system';
 import { IUser } from '@/utils/interfaces/user';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { SelectOption } from '@/utils/interfaces/react-select';
 import { MultiValue } from 'react-select';
@@ -17,8 +17,10 @@ import { MultiValue } from 'react-select';
 function Page({ params }: { params: { id: string } }) {
   const [stream, setStream] = useState<IStream>();
   const [viewers, setViewers] = useState<SelectOption[]>([]);
+  const [configs, setConfigs] = useState<IObject>({});
   const [clusters, setClusters] = useState<ICluster[]>([]);
   const [isGrading, setIsGrading] = useState<boolean>(false);
+  const [gradingError, setGradingError] = useState<string | undefined>();
 
   const routes: IRoute[] = [
     { title: 'Home', url: '/' },
@@ -34,6 +36,16 @@ function Page({ params }: { params: { id: string } }) {
       setClusters(data);
     };
 
+    const fetchSetting = async () => {
+      const res = await fetch(`/api/v1/settings`, { method: 'GET' });
+      if (!res.ok) {
+        setConfigs({});
+      } else {
+        const data = await res.json();
+        setConfigs(data.streams);
+      }
+    };
+
     const fetchStream = async () => {
       const response = await fetch(`/api/v1/streams/${params.id}`, {
         method: 'GET',
@@ -44,6 +56,7 @@ function Page({ params }: { params: { id: string } }) {
     };
 
     fetchStream();
+    fetchSetting();
     fetchClusters();
   }, [params.id]);
 
@@ -99,6 +112,12 @@ function Page({ params }: { params: { id: string } }) {
 
   const onGrandChange = (newValue: MultiValue<SelectOption>): void => {
     setViewers([...newValue]);
+
+    setGradingError(
+      newValue.length > configs?.maxViewersPerStream
+        ? `Limit reached: Maximum ${configs.maxViewersPerStream} viewers allowed.`
+        : undefined,
+    );
   };
 
   const onGrandeViewAccess = async (): Promise<void> => {
@@ -153,12 +172,17 @@ function Page({ params }: { params: { id: string } }) {
           onChange={onGrandChange}
           loadOptions={loadUserOptions}
         />
+        {gradingError && (
+          <label className="label">
+            <span className="label-text text-error">{gradingError}</span>
+          </label>
+        )}
         <div className="flex mt-4 justify-end gap-4 w-full">
           <button
             type="button"
             className="btn btn-primary"
             onClick={onGrandeViewAccess}
-            disabled={isGrading}
+            disabled={isGrading || !!gradingError}
           >
             {isGrading ? 'Grading...' : 'Grand Access'}
           </button>
