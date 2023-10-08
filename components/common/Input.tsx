@@ -5,6 +5,7 @@ interface CustomInputProps {
   label: string;
   type: string;
   value?: string;
+  disabled?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   error?: string;
 }
@@ -14,6 +15,7 @@ export const Input: React.FC<CustomInputProps> = ({
   label,
   type,
   value,
+  disabled,
   onChange,
   error,
 }) => (
@@ -22,6 +24,7 @@ export const Input: React.FC<CustomInputProps> = ({
       <span className="label-text">{label}</span>
     </label>
     <input
+      disabled={disabled}
       type={type}
       name={name}
       className={classNames('input input-bordered w-full', {
